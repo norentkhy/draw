@@ -1,17 +1,17 @@
 <template>
   <div id="app">
     <!-- <img alt="Vue logo" src="./assets/logo.png" /> -->
-    <PaintApp title="Paint App" />
+    <DrawApp title="Draw something" />
   </div>
 </template>
 
 <script>
-import PaintApp from "./components/PaintApp.vue";
+import DrawApp from "./components/DrawApp.vue";
 
 export default {
   name: "app",
   components: {
-    PaintApp
+    DrawApp
   }
 };
 </script>
