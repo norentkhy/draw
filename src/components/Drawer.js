@@ -6,6 +6,8 @@ export default class Drawer {
       this.setCanvasSizeToElementCssSize();
       this.drawRedCornerRectangles();
 
+      this.currentTool = { use: this.drawRectangle };
+      this.actions = [];
       this.oldContextStyles = [];
   }
 
@@ -51,13 +53,62 @@ export default class Drawer {
   mainClickEvent(event) {
     const drawAction = this.drawRectangle;
 
-    const position = this.getPositionFromEvent(event)
+    const position = this.getPosition(event)
     const size = [10, 10];
 
     drawAction.call(this, position, size);
   }
+
+  altClickEvent(event) {
+    alert("alternative clickEvent");
+  }
+
+  undo() {
+    alert("undo"); 
+  }
+
+  redo() {
+    alert("redo");
+  }
+
+  jumpTo(id) {
+    alert("jumping to " + id);
+  }
   
-  getPositionFromEvent(event) {
+  startDrawingAction(event) {
+    const currentAction = {};
+    currentAction.positions = [this.getPosition(event)];
+    currentAction.tool = this.currentTool;
+
+    this.actions.push(currentAction);
+    this.redraw(this.currentActions);
+  }
+
+  continueDrawingAction(event) {
+    const currentAction = this.actions[this.actions.length - 1];
+    currentAction.positions.push(this.getPosition(event));
+    this.redraw(this.currentActions);
+  }
+  
+  finishDrawingAction(event) {
+    //10/01/2020, 14:40 :: don't know what to put here
+  }
+
+  cancelDrawingAction(event) {
+    this.actions.pop();
+    this.redraw(this.currentActions);
+  }
+
+  redraw(drawingActions) {
+    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    drawingActions.forEach((drawingAction) => this.draw(drawingAction));
+  }
+
+  draw(drawingAction) {
+    drawingAction.tool.use(drawingAction.positions);
+  }
+  
+  getPosition(event) {
     const cssWidth = getNumberFromPxSize(
       window.getComputedStyle(this.canvas).width
     );
@@ -95,22 +146,6 @@ export default class Drawer {
     for (const style in newContextStyle) {
       this.context[style] = newContextStyle[style];
     }
-  }
-
-  altClickEvent(event) {
-    alert("alternative clickEvent");
-  }
-
-  undo() {
-    alert("undo"); 
-  }
-
-  redo() {
-    alert("redo");
-  }
-
-  jumpTo(id) {
-    alert("jumping to " + id);
   }
 }
 
