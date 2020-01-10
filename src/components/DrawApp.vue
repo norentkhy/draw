@@ -1,7 +1,6 @@
 <template>
   <div class="draw-app">
-    <h1>{{ title }}</h1>
-    <h2>history</h2>
+    <h1 v-if="title">{{ title }}</h1>
     <div class="control-buttons">
       <button
         @click="undo"
@@ -9,14 +8,17 @@
       <button
         @click="redo"
       >redo</button>
-      <ul id="draw-history">
+      <ul 
+        id="draw-history"
+        v-if="Object.keys(drawer)"
+      >
         <li>jump to: </li>
         <li
-          v-for="drawAction in drawActions"
-          @mouseup.left="jumpTo(drawAction.id)"
-          :key="drawAction.id"
+          v-for="action in drawer.previousActions"
+          @mouseup.left="jumpTo(action.id)"
+          :key="action.id"
         >
-          {{drawAction.name}}
+          {{action.id}}
         </li>
       </ul>
     </div>
@@ -34,49 +36,56 @@
 
 <script>
 import Drawer from './Drawer.js';
-import Mouse from './Mouse.js';
+import MouseController from './MouseController.js';
 
 const drawApp = {
   name: 'drawApp',
   props: {
     title: String
   },
+
   data: function () {
     return {
-      drawActions: [
-        { name: 'action1', id: 1 },
-        { name: 'action2', id: 2 }
-      ]
-    }
+      drawer: {},
+      mouseController: {},
+    };
   },
-  methods: {
-    movingOnCanvas: (event) => (event),
-    leftClickOnCanvas: (event) => drawer.mainClickEvent(event),
-    rightClickOnCanvas: (event) => drawer.altClickEvent(event),
-    move: (event) => mouseCanvas.move(event),
-    leftDown: (event) => mouseCanvas.leftDown(event),
-    leftUp: (event) => mouseCanvas.leftUp(event),
-    rightDown: (event) => mouseCanvas.rightDown(event),
-    rightUp: (event) => mouseCanvas.rightUp(event),
-    undo: () => drawer.undo(),
-    redo: () => drawer.redo(),
-    jumpTo: (id) => drawer.jumpTo(id),
-  }
-};
 
-let drawer;
-let mouseCanvas;
-window.onload = function() {
-  mouseCanvas = new Mouse({
-    respondToLeftDown: (event) => drawer.startDrawingAction(event),
-    respondToLeftMove: (event) => drawer.continueDrawingAction(event),
-    respondToLeftUp: (event) => drawer.finishDrawingAction(event),
-    respondToRightDown: () => console.log('rightDown'),
-    respondToRightMove: () => console.log('rightMove'),
-    respondToRightUp: () => console.log('rightUp'),
-    cancelCurrentAction: () => console.log('cancel'),
-  })
-  drawer = new Drawer(document.getElementById('canvas'));
+  mounted() {
+    const drawer = new Drawer(document.getElementById('canvas'));
+    const mouseController = new MouseController({
+      respondToLeftDown: function(event) { 
+        drawer.startDrawingAction(event) 
+      },
+      respondToLeftMove: function(event) { drawer.continueDrawingAction(event) },
+      respondToLeftUp: function(event) { drawer.finishDrawingAction(event) },
+      respondToRightDown: function() { console.log('rightDown') },
+      respondToRightMove: function() { console.log('rightMove') },
+      respondToRightUp: function() { console.log('rightUp') },
+      cancelCurrentAction: function() { console.log('cancel') },
+    });
+
+    this.drawer = drawer;
+    this.mouseController = mouseController;
+  },
+  
+  methods: {
+    move: function(event) { this.mouseController.move(event); },
+    leftDown: function(event) {
+      this.mouseController.leftDown(event);
+    },
+    leftUp: function(event) { 
+      this.mouseController.leftUp(event);
+      const previousActions = this.drawer.previousActions;
+      const lastAction = previousActions[previousActions.length - 1];
+      console.log(lastAction)
+    },
+    rightDown: function(event) { this.mouseController.rightDown(event); },
+    rightUp: function(event) { this.mouseController.rightUp(event); },
+    undo: function() { this.drawer.undo(); },
+    redo: function() { this.drawer.redo(); },
+    jumpTo: function(id) { this.drawer.jumpTo(id); },
+  }
 };
 
 export default drawApp;

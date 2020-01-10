@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <!-- <img alt="Vue logo" src="./assets/logo.png" /> -->
-    <DrawApp title="Draw something" />
+    <DrawApp title="" />
   </div>
 </template>
 

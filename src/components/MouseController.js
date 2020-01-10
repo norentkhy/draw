@@ -1,4 +1,4 @@
-export default class Mouse {
+export default class MouseController {
   constructor({
     respondToLeftDown, 
     respondToLeftMove,
