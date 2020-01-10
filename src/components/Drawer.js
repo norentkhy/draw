@@ -6,8 +6,11 @@ export default class Drawer {
       this.setCanvasSizeToElementCssSize();
       this.drawRedCornerRectangles();
 
-      this.currentTool = { use: this.drawRectangle };
-      this.actions = [];
+      this.currentTool = { 
+        use: this.drawRectangle,
+      };
+      this.currentAction = {};
+      this.previousActions = [];
       this.oldContextStyles = [];
   }
 
@@ -76,27 +79,28 @@ export default class Drawer {
   }
   
   startDrawingAction(event) {
-    const currentAction = {};
-    currentAction.positions = [this.getPosition(event)];
-    currentAction.tool = this.currentTool;
-
-    this.actions.push(currentAction);
-    this.redraw(this.currentActions);
+    this.currentAction = {};
+    this.currentAction.positions = [this.getPosition(event)];
+    this.currentAction.tool = this.currentTool;
+    this.redrawCurrent();
   }
 
   continueDrawingAction(event) {
-    const currentAction = this.actions[this.actions.length - 1];
-    currentAction.positions.push(this.getPosition(event));
-    this.redraw(this.currentActions);
+    this.currentAction.positions.push(this.getPosition(event));
+    this.redrawCurrent();
   }
   
   finishDrawingAction(event) {
-    //10/01/2020, 14:40 :: don't know what to put here
+    this.previousActions.push(this.currentAction);
   }
 
   cancelDrawingAction(event) {
-    this.actions.pop();
-    this.redraw(this.currentActions);
+    this.previousActions.pop();
+    this.redrawCurrent();
+  }
+
+  redrawCurrent() {
+    this.redraw([...this.previousActions, this.currentAction]);
   }
 
   redraw(drawingActions) {
@@ -105,7 +109,9 @@ export default class Drawer {
   }
 
   draw(drawingAction) {
-    drawingAction.tool.use(drawingAction.positions);
+    drawingAction.positions.forEach(
+      position => drawingAction.tool.use.call(this, position)
+    );
   }
   
   getPosition(event) {
@@ -121,14 +127,19 @@ export default class Drawer {
     ];
   }
 
-  drawRectangle(position, size) {
+  drawRectangles(positions, size = [3, 3]) {
+
+    positions.forEach(position => this.drawRectangle.call(this, position));
+  }
+
+  drawRectangle(position, size = [3, 3]) {
+    this.saveCurrentContextStyles("fillStyle");
+    this.context.fillStyle = "#FF0000";
+
     const topLeftCorner = getTopLeftCornerFromPositionAndSize(
       position,
       size
     );
-
-    this.saveCurrentContextStyles("fillStyle");
-    this.context.fillStyle = "#FF0000";
     this.context.fillRect(...topLeftCorner, ...size);
     this.recoverContextStyles("fillStyle");
   }

@@ -68,10 +68,16 @@ window.onload = function() {
   mouseCanvas = new Mouse({
     respondToLeftDown: (event) => {
       console.log('leftDown');
-      drawer.mainClickEvent(event);
+      drawer.startDrawingAction(event);
     },
-    respondToLeftMove: () => console.log('leftMove'),
-    respondToLeftUp: () => console.log('leftUp'),
+    respondToLeftMove: (event) => {
+      console.log('leftMove');
+      drawer.continueDrawingAction(event);
+    },
+    respondToLeftUp: () => {
+      console.log('leftUp');
+      drawer.finishDrawingAction(event);  
+    },
     respondToRightDown: () => console.log('rightDown'),
     respondToRightMove: () => console.log('rightMove'),
     respondToRightUp: () => console.log('rightUp'),
