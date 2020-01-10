@@ -1,14 +1,16 @@
 <template>
   <div class="draw-app">
     <h1>{{ title }}</h1>
-    <h2>concepts to implement</h2>
-    <ul>
-      <li>HTML: Canvas</li>
-      <li>Design Pattern: Command (undo redo history)</li>
-    </ul>
-    <h2>canvas</h2>
+    <h2>history</h2>
     <div class="control-buttons">
+      <button
+        @click="undo"
+      >undo</button>
+      <button
+        @click="redo"
+      >redo</button>
       <ul id="draw-history">
+        <li>jump to: </li>
         <li
           v-for="drawAction in drawActions"
           @mouseup.left="jumpTo(drawAction.id)"
@@ -66,18 +68,9 @@ let drawer;
 let mouseCanvas;
 window.onload = function() {
   mouseCanvas = new Mouse({
-    respondToLeftDown: (event) => {
-      console.log('leftDown');
-      drawer.startDrawingAction(event);
-    },
-    respondToLeftMove: (event) => {
-      console.log('leftMove');
-      drawer.continueDrawingAction(event);
-    },
-    respondToLeftUp: () => {
-      console.log('leftUp');
-      drawer.finishDrawingAction(event);  
-    },
+    respondToLeftDown: (event) => drawer.startDrawingAction(event),
+    respondToLeftMove: (event) => drawer.continueDrawingAction(event),
+    respondToLeftUp: (event) => drawer.finishDrawingAction(event),
     respondToRightDown: () => console.log('rightDown'),
     respondToRightMove: () => console.log('rightMove'),
     respondToRightUp: () => console.log('rightUp'),

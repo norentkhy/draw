@@ -6,6 +6,7 @@ export default class Drawer {
       this.setCanvasSizeToElementCssSize();
       this.drawRedCornerRectangles();
 
+      this.nextId = 0;
       this.currentTool = { 
         use: this.drawRectangle,
       };
@@ -67,21 +68,30 @@ export default class Drawer {
   }
 
   undo() {
-    alert("undo"); 
+    this.jumpTo(this.nextId - 2);
   }
 
   redo() {
-    alert("redo");
+    if (this.nextId < this.previousActions.length) {
+      this.jumpTo(this.nextId);
+    } else {
+      console.log('nothing to redo');
+    }
   }
 
   jumpTo(id) {
-    alert("jumping to " + id);
+    this.nextId = id + 1;
+    this.redrawId(id);
   }
   
   startDrawingAction(event) {
+    this.previousActions = this.previousActions.slice(0, this.nextId);
+
     this.currentAction = {};
     this.currentAction.positions = [this.getPosition(event)];
     this.currentAction.tool = this.currentTool;
+    this.currentAction.id = this.nextId;
+
     this.redrawCurrent();
   }
 
@@ -91,6 +101,7 @@ export default class Drawer {
   }
   
   finishDrawingAction(event) {
+    this.nextId++;
     this.previousActions.push(this.currentAction);
   }
 
@@ -103,14 +114,18 @@ export default class Drawer {
     this.redraw([...this.previousActions, this.currentAction]);
   }
 
-  redraw(drawingActions) {
-    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    drawingActions.forEach((drawingAction) => this.draw(drawingAction));
+  redrawId(id) {
+    this.redraw(this.previousActions.slice(0, id + 1));
   }
 
-  draw(drawingAction) {
-    drawingAction.positions.forEach(
-      position => drawingAction.tool.use.call(this, position)
+  redraw(actions) {
+    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    actions.forEach((action) => this.draw(action));
+  }
+
+  draw(action) {
+    action.positions.forEach(
+      position => action.tool.use.call(this, position)
     );
   }
   
@@ -128,7 +143,6 @@ export default class Drawer {
   }
 
   drawRectangles(positions, size = [3, 3]) {
-
     positions.forEach(position => this.drawRectangle.call(this, position));
   }
 
