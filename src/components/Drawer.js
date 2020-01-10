@@ -1,6 +1,6 @@
 export default class Drawer {
-  constructor() {
-      this.canvas = document.getElementById("canvas");
+  constructor(canvas) {
+      this.canvas = canvas;
       this.context = this.canvas.getContext("2d");
 
       this.setCanvasSizeToElementCssSize();
@@ -48,7 +48,7 @@ export default class Drawer {
     }
   }
 
-  drawClickEvent(event) {
+  mainClickEvent(event) {
     const drawAction = this.drawRectangle;
 
     const position = this.getPositionFromEvent(event)
@@ -95,6 +95,22 @@ export default class Drawer {
     for (const style in newContextStyle) {
       this.context[style] = newContextStyle[style];
     }
+  }
+
+  altClickEvent(event) {
+    alert("alternative clickEvent");
+  }
+
+  undo() {
+    alert("undo"); 
+  }
+
+  redo() {
+    alert("redo");
+  }
+
+  jumpTo(id) {
+    alert("jumping to " + id);
   }
 }
 

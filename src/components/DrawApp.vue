@@ -7,17 +7,24 @@
       <li>Design Pattern: Command (undo redo history)</li>
     </ul>
     <h2>canvas</h2>
-    <ul id="draw-history">
-      <li
-        v-for="drawAction in drawActions"
-        :key="drawAction.id"
-      >
-        {{drawAction.name}}
-      </li>
-    </ul>
+    <div class="control-buttons">
+      <ul id="draw-history">
+        <li
+          v-for="drawAction in drawActions"
+          @mouseup.left="jumpTo(drawAction.id)"
+          :key="drawAction.id"
+        >
+          {{drawAction.name}}
+        </li>
+      </ul>
+    </div>
     <canvas
-      v-on:click="clickOnCanvas"
       id="canvas"
+      @mousemove="move"
+      @mousedown.left="leftDown"
+      @mouseup.left="leftUp"
+      @mousedown.right="rightClickOnCanvas"
+      @contextmenu.prevent
     ></canvas>
 
   </div>
@@ -25,29 +32,52 @@
 
 <script>
 import Drawer from './Drawer.js';
+import Mouse from './Mouse.js';
 
 const drawApp = {
-  name: "drawApp",
+  name: 'drawApp',
   props: {
     title: String
   },
   data: function () {
     return {
       drawActions: [
-        { name: "action1", id: 1 },
-        { name: "action2", id: 2 }
+        { name: 'action1', id: 1 },
+        { name: 'action2', id: 2 }
       ]
     }
   },
   methods: {
-    clickOnCanvas: (event) => drawer.drawClickEvent(event),
+    movingOnCanvas: (event) => (event),
+    leftClickOnCanvas: (event) => drawer.mainClickEvent(event),
+    rightClickOnCanvas: (event) => drawer.altClickEvent(event),
+    move: (event) => mouseCanvas.move(event),
+    leftDown: (event) => mouseCanvas.leftDown(event),
+    leftUp: (event) => mouseCanvas.leftUp(event),
+    rightDown: (event) => mouseCanvas.rightDown(event),
+    rightUp: (event) => mouseCanvas.rightUp(event),
+    undo: () => drawer.undo(),
+    redo: () => drawer.redo(),
+    jumpTo: (id) => drawer.jumpTo(id),
   }
 };
 
-var drawer;
-
+let drawer;
+let mouseCanvas;
 window.onload = function() {
-  drawer = new Drawer();
+  mouseCanvas = new Mouse({
+    respondToLeftDown: (event) => {
+      console.log('leftDown');
+      drawer.mainClickEvent(event);
+    },
+    respondToLeftMove: () => console.log('leftMove'),
+    respondToLeftUp: () => console.log('leftUp'),
+    respondToRightDown: () => console.log('rightDown'),
+    respondToRightMove: () => console.log('rightMove'),
+    respondToRightUp: () => console.log('rightUp'),
+    cancelCurrentAction: () => console.log('cancel'),
+  })
+  drawer = new Drawer(document.getElementById('canvas'));
 };
 
 export default drawApp;
@@ -75,7 +105,7 @@ a {
 }
 
 #canvas {
-  height: 70%;
+  height: 500px;
   width: 70%;
   border: #999 2px solid;
   background-color: #FFFFFF;
