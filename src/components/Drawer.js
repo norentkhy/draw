@@ -1,12 +1,13 @@
 export default class Drawer {
-  constructor(canvas) {
+  constructor(canvas, drawTool) {
       this.canvas = canvas;
       this.context = this.canvas.getContext("2d");
+      this.drawTool = drawTool;
 
       this.setCanvasSizeToElementCssSize();
       this.drawRedCornerRectangles();
 
-      this.nextId = 0;
+      this.nextId = 1;
       this.currentTool = { 
         use: this.drawRectangle,
       };
@@ -68,7 +69,12 @@ export default class Drawer {
   }
 
   undo() {
-    this.jumpTo(this.nextId - 2);
+    const id = this.nextId - 1;
+    if ( id > 1) {
+      this.jumpTo(this.nextId - 2);
+    } else {
+      console.log('nothing to undo');
+    }
   }
 
   redo() {
@@ -115,7 +121,7 @@ export default class Drawer {
   }
 
   redrawId(id) {
-    this.redraw(this.previousActions.slice(0, id + 1));
+    this.redraw(this.previousActions.slice(0, id));
   }
 
   redraw(actions) {
