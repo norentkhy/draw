@@ -37,7 +37,7 @@
 <script>
 import DrawingKit from './DrawingKit.js';
 import Drawer from './Drawer.js';
-import MouseController from './MouseController.js';
+import MouseDrawer from './MouseDrawer.js';
 import correctCanvas from './correctCanvas.js';
 
 const drawApp = {
@@ -49,7 +49,7 @@ const drawApp = {
   data: function () {
     return {
       drawer: {},
-      mouseController: {},
+      mouseDrawer: {},
     };
   },
 
@@ -58,7 +58,7 @@ const drawApp = {
     correctCanvas(canvas);
     const drawingKit = new DrawingKit(canvas);
     const drawer = new Drawer(canvas, drawingKit);
-    const mouseController = new MouseController({
+    const mouseDrawer = new MouseDrawer({
       respondToLeftDown: function(event) { 
         drawer.startDrawingAction(event) 
       },
@@ -71,21 +71,21 @@ const drawApp = {
     });
 
     this.drawer = drawer;
-    this.mouseController = mouseController;
+    this.mouseDrawer = mouseDrawer;
   },
   
   methods: {
-    move: function(event) { this.mouseController.move(event); },
+    move: function(event) { this.mouseDrawer.move(event); },
     leftDown: function(event) {
-      this.mouseController.leftDown(event);
+      this.mouseDrawer.leftDown(event);
     },
     leftUp: function(event) { 
-      this.mouseController.leftUp(event);
+      this.mouseDrawer.leftUp(event);
       const previousActions = this.drawer.previousActions;
       const lastAction = previousActions[previousActions.length - 1];
     },
-    rightDown: function(event) { this.mouseController.rightDown(event); },
-    rightUp: function(event) { this.mouseController.rightUp(event); },
+    rightDown: function(event) { this.mouseDrawer.rightDown(event); },
+    rightUp: function(event) { this.mouseDrawer.rightUp(event); },
     undo: function() { this.drawer.undo(); },
     redo: function() { this.drawer.redo(); },
     jumpTo: function(id) { this.drawer.jumpTo(id); },
