@@ -1,8 +1,9 @@
 import palettes from 'nice-color-palettes';
 
 export default class DrawingKit {
-  constructor(context) {
-    this.context = context;
+  constructor(canvas) {
+    this.canvas = canvas;
+    this.context = this.canvas.getContext("2d");
     this.palette = palettes[0];
 
     this.selectRectanglesTool();
@@ -23,7 +24,7 @@ export default class DrawingKit {
     const currentTool = {
       drawingContext,
       use(positions) {
-        const previousContext = this.getCurrentContext();
+        const previousContext = this.getDrawingContext();
         this.setContext(drawingContext);
         this.useTool(positions);
         this.setContext(previousContext);
@@ -50,7 +51,6 @@ export default class DrawingKit {
   }
 
   drawRectangle(position, size = [3, 3]) {
-    this.saveCurrentContextStyles("fillStyle");
     this.context.fillStyle = "#FF0000";
 
     const topLeftCorner = getTopLeftCornerFromPositionAndSize(
@@ -58,7 +58,6 @@ export default class DrawingKit {
       size
     );
     this.context.fillRect(...topLeftCorner, ...size);
-    this.recoverContextStyles("fillStyle");
   }
 }
 
