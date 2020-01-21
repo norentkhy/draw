@@ -1,8 +1,8 @@
 export default class Drawer {
-  constructor(canvas, drawTool) {
+  constructor(canvas, drawingKit) {
       this.canvas = canvas;
       this.context = this.canvas.getContext("2d");
-      this.drawTool = drawTool;
+      this.drawTool = drawingKit;
 
       this.setCanvasSizeToElementCssSize();
       this.drawRedCornerRectangles();
@@ -71,7 +71,7 @@ export default class Drawer {
   undo() {
     const id = this.nextId - 1;
     if ( id >= 1) {
-      this.jumpTo(this.nextId - 2);
+      this.jumpTo(id - 1);
     } else {
       console.log('nothing to undo');
     }

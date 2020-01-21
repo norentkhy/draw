@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import DrawTool from './DrawTool.js';
+import DrawingKit from './DrawingKit.js';
 import Drawer from './Drawer.js';
 import MouseController from './MouseController.js';
 
@@ -53,8 +53,9 @@ const drawApp = {
   },
 
   mounted() {
-    const drawTool = new DrawTool();
-    const drawer = new Drawer(document.getElementById('canvas'), drawTool);
+    const canvas = document.getElementById('canvas');
+    const drawingKit = new DrawingKit(canvas);
+    const drawer = new Drawer(canvas, drawingKit);
     const mouseController = new MouseController({
       respondToLeftDown: function(event) { 
         drawer.startDrawingAction(event) 
