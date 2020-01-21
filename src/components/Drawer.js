@@ -78,7 +78,7 @@ export default class Drawer {
   }
 
   redo() {
-    if (this.nextId < this.previousActions.length) {
+    if (this.nextId <= this.previousActions.length) {
       this.jumpTo(this.nextId);
     } else {
       console.log('nothing to redo');
