@@ -16,8 +16,8 @@
         <!-- <li>jump to: </li> -->
         <li
           v-for="action of drawer.previousActions"
-          @mouseup.left="jumpTo(action.id)"
           :key="action.id"
+          @mouseup.left="jumpTo(action.id)"
         >
           {{action.id}}
         </li>
@@ -33,6 +33,18 @@
       @contextmenu.prevent
     ></canvas>
 
+    <div class="draw-tools">
+      colors:
+      <ul id="color-palette">
+        <li
+          v-for="color of colors"
+          :key=color
+          @mouseup.left="selectColor(color)"
+          :style="{backgroundColor: color}"
+        >{{color}}</li>
+      </ul>
+    </div>
+
   </div>
 </template>
 
@@ -41,6 +53,7 @@ import DrawingKit from './DrawingKit.js';
 import Drawer from './Drawer.js';
 import MouseDrawer from './MouseDrawer.js';
 import correctCanvas from './correctCanvas.js';
+import colorPalettes from 'nice-color-palettes';
 
 const drawApp = {
   name: 'drawApp',
@@ -50,8 +63,10 @@ const drawApp = {
 
   data: function () {
     return {
+      drawingKit: {},
       drawer: {},
       mouseDrawer: {},
+      colors: [],
     };
   },
 
@@ -62,8 +77,10 @@ const drawApp = {
     const drawer = new Drawer(canvas, drawingKit);
     const mouseDrawer = new MouseDrawer(drawer);
 
+    this.drawingKit = drawingKit;
     this.drawer = drawer;
     this.mouseDrawer = mouseDrawer;
+    this.colors = colorPalettes[0];
   },
   
   methods: {
@@ -75,6 +92,7 @@ const drawApp = {
     undo: function() { this.drawer.undo(); },
     redo: function() { this.drawer.redo(); },
     jumpTo: function(id) { this.drawer.jumpTo(id); },
+    selectColor: function(color) { this.drawingKit.setToolColor(color); }
   }
 };
 
