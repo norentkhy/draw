@@ -1,20 +1,12 @@
 export default class MouseController {
-  constructor({
-    respondToLeftDown, 
-    respondToLeftMove,
-    respondToLeftUp,
-    respondToRightDown,
-    respondToRightMove,
-    respondToRightUp,
-    cancelCurrentAction,
-  }) {
-    this.respondToLeftDown = respondToLeftDown;
-    this.respondToLeftMove = respondToLeftMove;
-    this.respondToLeftUp = respondToLeftUp;
-    this.respondToRightDown = respondToRightDown;
-    this.respondToRightMove = respondToRightMove;
-    this.respondToRightUp = respondToRightUp;
-    this.cancelCurrentAction = cancelCurrentAction;
+  constructor(drawer) {
+    this.respondToLeftDown = function(event) { drawer.startDrawingAction(event) };
+    this.respondToLeftMove = function(event) { drawer.continueDrawingAction(event) };
+    this.respondToLeftUp = function(event) { drawer.finishDrawingAction(event) };
+    this.respondToRightDown = function() { console.log('rightDown') };
+    this.respondToRightMove = function() { console.log('rightMove') };
+    this.respondToRightUp = function() { console.log('rightUp') };
+    this.cancelCurrentAction = function() { console.log('cancel') };
 
     this.setAllInactive();
   }

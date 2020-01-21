@@ -1,6 +1,7 @@
 <template>
   <div class="draw-app">
     <h1 v-if="title">{{ title }}</h1>
+
     <div class="control-buttons">
       <button
         @click="undo"
@@ -22,6 +23,7 @@
         </li>
       </ul>
     </div>
+    
     <canvas
       id="canvas"
       @mousemove="move"
@@ -58,17 +60,7 @@ const drawApp = {
     correctCanvas(canvas);
     const drawingKit = new DrawingKit(canvas);
     const drawer = new Drawer(canvas, drawingKit);
-    const mouseDrawer = new MouseDrawer({
-      respondToLeftDown: function(event) { 
-        drawer.startDrawingAction(event) 
-      },
-      respondToLeftMove: function(event) { drawer.continueDrawingAction(event) },
-      respondToLeftUp: function(event) { drawer.finishDrawingAction(event) },
-      respondToRightDown: function() { console.log('rightDown') },
-      respondToRightMove: function() { console.log('rightMove') },
-      respondToRightUp: function() { console.log('rightUp') },
-      cancelCurrentAction: function() { console.log('cancel') },
-    });
+    const mouseDrawer = new MouseDrawer(drawer);
 
     this.drawer = drawer;
     this.mouseDrawer = mouseDrawer;
@@ -76,14 +68,8 @@ const drawApp = {
   
   methods: {
     move: function(event) { this.mouseDrawer.move(event); },
-    leftDown: function(event) {
-      this.mouseDrawer.leftDown(event);
-    },
-    leftUp: function(event) { 
-      this.mouseDrawer.leftUp(event);
-      const previousActions = this.drawer.previousActions;
-      const lastAction = previousActions[previousActions.length - 1];
-    },
+    leftDown: function(event) { this.mouseDrawer.leftDown(event); },
+    leftUp: function(event) { this.mouseDrawer.leftUp(event); },
     rightDown: function(event) { this.mouseDrawer.rightDown(event); },
     rightUp: function(event) { this.mouseDrawer.rightUp(event); },
     undo: function() { this.drawer.undo(); },
