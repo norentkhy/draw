@@ -12,9 +12,9 @@
         id="draw-history"
         v-if="Object.keys(drawer)"
       >
-        <li>jump to: </li>
+        <!-- <li>jump to: </li> -->
         <li
-          v-for="action in drawer.previousActions"
+          v-for="action of drawer.previousActions"
           @mouseup.left="jumpTo(action.id)"
           :key="action.id"
         >

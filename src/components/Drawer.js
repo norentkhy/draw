@@ -12,7 +12,7 @@ export default class Drawer {
         use: this.drawRectangle,
       };
       this.currentAction = {};
-      this.previousActions = [];
+      this.previousActions = [{positions: [], id: 0}];
       this.oldContextStyles = [];
   }
 
@@ -121,7 +121,7 @@ export default class Drawer {
   }
 
   redrawId(id) {
-    this.redraw(this.previousActions.slice(0, id));
+    this.redraw(this.previousActions.slice(0, id + 1));
   }
 
   redraw(actions) {
