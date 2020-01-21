@@ -1,21 +1,26 @@
-import palettes from 'nice-color-palettes';
+import colorPalettes from 'nice-color-palettes';
 
 export default class DrawingKit {
   constructor(canvas) {
     this.canvas = canvas;
     this.context = this.canvas.getContext("2d");
-    this.palette = palettes[0];
+    this.colors = colorPalettes[0];
 
-    this.selectRectanglesTool();
-    this.selectColor(this.palette[0]);
+    this.setLineTool();
+    this.setToolColor(this.colors[0]);
   }
 
-  selectRectanglesTool() {
+  setLineTool() {
+    this.useTool = this.drawLine;
+  }
+
+  setRectanglesTool() {
     this.useTool = this.drawRectangles;
   }
 
-  selectColor(color) {
-    this.selectedColor = color;
+  setToolColor(color) {
+    this.context.fillStyle = color;
+    this.context.strokeStyle = color;
   }
 
   getSelectedTool() {
@@ -34,10 +39,11 @@ export default class DrawingKit {
   }
 
   getDrawingContext() {
-    const currentContext = {
+    const drawingContext = {
       fillStyle: this.context.fillStyle,
+      strokeStyle: this.context.strokeStyle,
     };
-    return currentContext;
+    return drawingContext;
   }
 
   setContext(contextChanges) {
@@ -46,13 +52,25 @@ export default class DrawingKit {
     }
   }
 
+  drawLine(positions) {
+    const context = this.context;
+
+    const startPosition = positions[0];
+    const remainingPositions = positions.slice(1, positions.length + 1);
+
+    context.beginPath();
+    context.moveTo(...startPosition);
+    remainingPositions.forEach(position => {
+      context.lineTo(...position);
+    });
+    context.stroke();
+  }
+
   drawRectangles(positions, size = [3, 3]) {
     positions.forEach(position => this.drawRectangle.call(this, position));
   }
 
   drawRectangle(position, size = [3, 3]) {
-    this.context.fillStyle = "#FF0000";
-
     const topLeftCorner = getTopLeftCornerFromPositionAndSize(
       position,
       size

@@ -38,6 +38,7 @@
 import DrawingKit from './DrawingKit.js';
 import Drawer from './Drawer.js';
 import MouseController from './MouseController.js';
+import correctCanvas from './correctCanvas.js';
 
 const drawApp = {
   name: 'drawApp',
@@ -54,6 +55,7 @@ const drawApp = {
 
   mounted() {
     const canvas = document.getElementById('canvas');
+    correctCanvas(canvas);
     const drawingKit = new DrawingKit(canvas);
     const drawer = new Drawer(canvas, drawingKit);
     const mouseController = new MouseController({

@@ -4,20 +4,9 @@ export default class Drawer {
       this.context = this.canvas.getContext("2d");
       this.drawingKit = drawingKit;
 
-      this.setCanvasSizeToElementCssSize();
-
       this.nextId = 1;
       this.currentAction = {};
       this.previousActions = [{positions: [], id: 0}];
-  }
-
-  setCanvasSizeToElementCssSize() {
-    this.canvas.width = Math.floor(
-      getNumberFromPxSize(window.getComputedStyle(this.canvas).width)
-    );
-    this.canvas.height = Math.floor(
-      getNumberFromPxSize(window.getComputedStyle(this.canvas).height)
-    );
   }
 
   undo() {
