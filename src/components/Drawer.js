@@ -70,7 +70,7 @@ export default class Drawer {
 
   undo() {
     const id = this.nextId - 1;
-    if ( id > 1) {
+    if ( id >= 1) {
       this.jumpTo(this.nextId - 2);
     } else {
       console.log('nothing to undo');
