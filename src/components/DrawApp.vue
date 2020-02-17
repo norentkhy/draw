@@ -124,7 +124,7 @@ a {
 }
 
 #canvas {
-  height: 500px;
+  height: 400px;
   width: 70%;
   border: #999 2px solid;
   background-color: #FFFFFF;

@@ -85,9 +85,18 @@ export default class Drawer {
     const cssHeight = getNumberFromPxSize(
       window.getComputedStyle(this.canvas).height
     );
+
+    const eventX = event.type.includes("mouse")
+      ? event.offsetX
+      : event.touches[0].pageX - event.target.offsetLeft;
+
+    const eventY = event.type.includes("mouse")
+      ? event.offsetY
+      : event.touches[0].pageY - event.target.offsetTop;
+    
     return [
-      (event.offsetX * this.canvas.width) / cssWidth,
-      (event.offsetY * this.canvas.height) / cssHeight
+      (eventX * this.canvas.width) / cssWidth,
+      (eventY * this.canvas.height) / cssHeight
     ];
   }
 }
