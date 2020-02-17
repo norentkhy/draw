@@ -30,6 +30,9 @@
       @mousedown.left="leftDown"
       @mouseup.left="leftUp"
       @mousedown.right="rightClickOnCanvas"
+      @touchstart="leftDown"
+      @touchmove="move"
+      @touchend="leftUp"
       @contextmenu.prevent
     ></canvas>
 
