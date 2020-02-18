@@ -118,7 +118,7 @@ a {
 }
 
 .draw-app {
-  height: 90%;
+  height: 80%;
   display: flex;
   flex-direction: column;
 }
