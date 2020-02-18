@@ -119,12 +119,22 @@ a {
 
 .draw-app {
   height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.control-buttons {
+ height: 5em;
 }
 
 #canvas {
-  height: 70%;
-  width: 98%;
+  flex: 1;
+  width: 99%;
   border: #999 2px solid;
   background-color: #FFFFFF;
+}
+
+.draw-tools {
+ height: 6em;
 }
 </style>
