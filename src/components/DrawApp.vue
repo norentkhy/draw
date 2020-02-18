@@ -1,7 +1,5 @@
 <template>
   <div class="draw-app">
-    <h1 v-if="title">{{ title }}</h1>
-
     <div class="control-buttons">
       <button
         @click="undo"
@@ -105,7 +103,7 @@ export default drawApp;
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 h3 {
-  margin: 40px 0 0;
+  margin: 0px 0 0;
 }
 ul {
   list-style-type: none;
@@ -124,8 +122,8 @@ a {
 }
 
 #canvas {
-  height: 400px;
-  width: 70%;
+  height: 70%;
+  width: 98%;
   border: #999 2px solid;
   background-color: #FFFFFF;
 }
